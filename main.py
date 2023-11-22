@@ -302,7 +302,7 @@ def main():
     
     model.eval()
     
-    if "opt" in args.model:
+    if "opt" in args.model or "codellama" in args.model or "mistral" in args.model:
         tokenizer = AutoTokenizer.from_pretrained(args.model, use_fast=False)
     elif "llama" in args.model:
     
@@ -381,7 +381,8 @@ def main():
         prune_wanda_outlier_structure_special(args, model, tokenizer, device, prune_n=prune_n, prune_m=prune_m)
 
 
-         
+    model.model.save_pretrained(args.save)
+    
     ################################################################
     print("*"*30)
     sparsity_ratio = check_sparsity(model)

@@ -179,9 +179,12 @@ def prepare_calibration_input(model, dataloader, device):
             cache['position_ids'] = kwargs['position_ids']
             raise ValueError
     layers[0] = Catcher(layers[0])
-    for batch in dataloader:
+    for ix, batch in enumerate(dataloader):
         try:
+            # print(batch)
+            print("Processing sample: ", ix)
             model(batch[0].to(device))
+            # exit()
         except ValueError:
             pass 
     layers[0] = layers[0].module
@@ -191,6 +194,8 @@ def prepare_calibration_input(model, dataloader, device):
     position_ids = cache['position_ids']
     model.config.use_cache = use_cache
 
+    # print("inputs inside function: ", inps)
+    # exit()
     return inps, outs, attention_mask, position_ids 
 
 def return_given_alpha(alpha, sort_res, W_metric, tmp_metric, sum_before):
@@ -1218,7 +1223,9 @@ def prune_sparsegpt_outlier(args, model, tokenizer, dev, prune_n=0, prune_m=0):
     model.config.use_cache = False 
 
     print("loading calibdation data")
-    dataloader, _ = get_loaders("c4",nsamples=args.nsamples,seed=args.seed,seqlen=2048,tokenizer=tokenizer)
+    # dataloader, _ = get_loaders("c4",nsamples=args.nsamples,seed=args.seed,seqlen=2048,tokenizer=tokenizer)
+    # dataloader, _ = get_loaders("codealpaca",nsamples=args.nsamples,seed=args.seed,seqlen=2048,tokenizer=tokenizer)
+    dataloader, _ = get_loaders("platypus",nsamples=args.nsamples,seed=args.seed,seqlen=2048,tokenizer=tokenizer)
     print("dataset loading complete")
     with torch.no_grad():
         
@@ -1347,7 +1354,9 @@ def prune_sparsegpt_outlier(args, model, tokenizer, dev, prune_n=0, prune_m=0):
     print('Starting ...')
 
 
-    dataloader, _ = get_loaders("c4",nsamples=args.nsamples,seed=args.seed,seqlen=2048,tokenizer=tokenizer)
+    dataloader, _ = get_loaders("platypus",nsamples=args.nsamples,seed=args.seed,seqlen=2048,tokenizer=tokenizer)
+    # dataloader, _ = get_loaders("codealpaca",nsamples=args.nsamples,seed=args.seed,seqlen=2048,tokenizer=tokenizer)
+    # dataloader, _ = get_loaders("c4",nsamples=args.nsamples,seed=args.seed,seqlen=2048,tokenizer=tokenizer)
 
 
 
